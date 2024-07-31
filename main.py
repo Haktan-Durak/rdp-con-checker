@@ -1,8 +1,28 @@
+'''
+Created by Haktan Durak
+Check my github repository https://github.com/Haktan-Durak/
+'''
+
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import argparse
 import getpass
+from colorama import init, Fore, Back, Style
 
+init(autoreset=True)
+                                                                                                                                                        
+print(Fore.RED + """@@@@@@@   @@@@@@@   @@@@@@@               @@@@@@@   @@@@@@   @@@  @@@              @@@@@@@  @@@  @@@  @@@@@@@@   @@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@   
+@@@@@@@@  @@@@@@@@  @@@@@@@@             @@@@@@@@  @@@@@@@@  @@@@ @@@             @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  
+@@!  @@@  @@!  @@@  @@!  @@@             !@@       @@!  @@@  @@!@!@@@             !@@       @@!  @@@  @@!       !@@       @@!  !@@  @@!       @@!  @@@  
+!@!  @!@  !@!  @!@  !@!  @!@             !@!       !@!  @!@  !@!!@!@!             !@!       !@!  @!@  !@!       !@!       !@!  @!!  !@!       !@!  @!@  
+@!@!!@!   @!@  !@!  @!@@!@!   @!@!@!@!@  !@!       @!@  !@!  @!@ !!@!  @!@!@!@!@  !@!       @!@!@!@!  @!!!:!    !@!       @!@@!@!   @!!!:!    @!@!!@!   
+!!@!@!    !@!  !!!  !!@!!!    !!!@!@!!!  !!!       !@!  !!!  !@!  !!!  !!!@!@!!!  !!!       !!!@!!!!  !!!!!:    !!!       !!@!!!    !!!!!:    !!@!@!    
+!!: :!!   !!:  !!!  !!:                  :!!       !!:  !!!  !!:  !!!             :!!       !!:  !!!  !!:       :!!       !!: :!!   !!:       !!: :!!   
+:!:  !:!  :!:  !:!  :!:                  :!:       :!:  !:!  :!:  !:!             :!:       :!:  !:!  :!:       :!:       :!:  !:!  :!:       :!:  !:!  
+::   :::   :::: ::   ::                   ::: :::  ::::: ::   ::   ::              ::: :::  ::   :::   :: ::::   ::: :::   ::  :::   :: ::::  ::   :::  
+ :   : :  :: :  :    :                    :: :: :   : :  :   ::    :               :: :: :   :   : :  : :: ::    :: :: :   :   :::  : :: ::    :   : :
+ """ + Style.RESET_ALL) 
+                                                                                                                                                        
 def check_rdp_connection(ip, username, password, ntlm_hash):
     
     if ntlm_hash:
@@ -29,16 +49,11 @@ def check_rdp_connection(ip, username, password, ntlm_hash):
         return f"{ip}: Connection timeout"
 
 def main(ip_list_file, username, password, ntlm_hash):
-    # IP listesini oku
     with open(ip_list_file, 'r') as file:
         ip_addresses = [line.strip() for line in file.readlines()]
 
-    # Thread havuzu oluştur
     with ThreadPoolExecutor(max_workers=5) as executor:
-        # Her IP için bağlantı kontrolü yap
         futures = [executor.submit(check_rdp_connection, ip, username, password, ntlm_hash) for ip in ip_addresses]
-
-        # Sonuçları sırayla yazdır
         for future in as_completed(futures):
             print(future.result())
 
